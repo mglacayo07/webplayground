@@ -4,9 +4,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 from .models import Page
+from .forms import PageForm
 
-
-# Lista todas las Pages
+# Lista
+# todas las Pages
 class PageListView(ListView):
     model = Page
     paginate_by = 100
@@ -20,13 +21,14 @@ class PageDetailView(DetailView):
 # Vista para crear un page
 class PageCreate(CreateView):
     model = Page
-    fields = ['title','content','order']  # campos que son editables
+    form_class = PageForm
     success_url = reverse_lazy('pages:pages')
 
 
 class PageUpdate(UpdateView):
     model = Page
-    fields = ['title', 'content', 'order']
+    form_class = PageForm
+
     template_name_suffix = '_update_form'  #Si queremos que vaya a un formulario diferente al de creación.
 
     def get_success_url(self):
