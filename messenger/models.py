@@ -12,9 +12,27 @@ class Message(models.Model):
         ordering = ['created']
 
 
+# Nos ayudara a crear nuestros filtros personalizados
+class ThreadManager(models.Manager):
+    # En un Manager el self hace referencia al queryset Modelo.objects.all()
+    def find(self, user1, user2):
+        queryset = self.filter(users=user1).filter(users=user2)
+        if len(queryset) > 0:
+            return queryset[0]
+        return None
+
+    def find_or_create(self, user1, user2):
+        thread = self.find(user1, user2)
+        if thread is None:
+            thread = Thread.objects.create()
+            thread.users.add(user1, user2)
+        return thread
+
 class Thread(models.Model):
     users = models.ManyToManyField(User, related_name='thread')
     messages = models.ManyToManyField(Message)
+
+    objects = ThreadManager()
 
 
 def messages_changed(sender,**kwargs):
@@ -24,7 +42,7 @@ def messages_changed(sender,**kwargs):
     print(instance, action, pk_set)
 
     false_pk_set = set()
-    if action is "pre_add":
+    if action == "pre_add":
         for msg_pk in pk_set:
             msg = Message.objects.get(pk=msg_pk)
             if msg.user not in instance.users.all():
