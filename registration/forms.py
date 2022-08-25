@@ -25,7 +25,7 @@ class ProfileForm(forms.ModelForm):
         widgets = {
             'avatar': forms.ClearableFileInput(attrs={'class':'form-control-file mt-3'}),
             'bio': forms.Textarea(attrs={'class': 'form-control mt-3', 'rows': 3, 'placeholder': 'Biografía'}),
-            'link': forms.Textarea(attrs={'class': 'form-control mt-3', 'placeholder': 'Enlace'})
+            'link': forms.URLInput(attrs={'class': 'form-control mt-3', 'placeholder': 'Enlace'})
         }
 
 

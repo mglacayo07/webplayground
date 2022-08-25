@@ -24,7 +24,7 @@ class SingUpView(CreateView):
         # Modificar en tiempo real el formulario
         form.fields['username'].widget = forms.TextInput(attrs={'class': 'form-control mb-2',
                                                                 'placeholder': 'Nombre de usuario'})
-        form.fields['email'].widget = forms.TextInput(attrs={'class': 'form-control mb-2',
+        form.fields['email'].widget = forms.EmailField(attrs={'class': 'form-control mb-2',
                                                                 'placeholder': 'Email'})
         form.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control mb-2',
                                                                 'placeholder': 'Contraseña'})
@@ -59,7 +59,7 @@ class EmailUpdate(UpdateView):
     def get_form(self, form_class=None):
         form = super(EmailUpdate, self).get_form()
         # Modificar en tiempo real el formulario
-        form.fields['email'].widget = forms.TextInput(attrs={'class': 'form-control mb-2',
+        form.fields['email'].widget = forms.EmailInput(attrs={'class': 'form-control mb-2',
                                                              'placeholder': 'Email'})
         return form
 
