@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
 
+
 class UserCreationFormWithEmail(UserCreationForm):
     email = forms.EmailField(required=True, help_text="Requerido, 254 caracteres como máxico y debe ser valido")
 
@@ -26,3 +27,19 @@ class ProfileForm(forms.ModelForm):
             'bio': forms.Textarea(attrs={'class': 'form-control mt-3', 'rows': 3, 'placeholder': 'Biografía'}),
             'link': forms.Textarea(attrs={'class': 'form-control mt-3', 'placeholder': 'Enlace'})
         }
+
+
+class EmailForm(forms.ModelForm):
+    email = forms.EmailField(required=True, help_text="Requerido, 254 caracteres como máxico y debe ser valido")
+
+    class Meta:
+        model = User
+        fields = ("email",)
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        # self.changed_data es una lista con los campos que fueron modificados
+        if 'email' in self.changed_data:
+            if User.objects.filter(email=email).exists():
+                raise forms.ValidationError("El email ya está registrado, prueba con otro.")
+        return email
