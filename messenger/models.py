@@ -28,8 +28,9 @@ class ThreadManager(models.Manager):
             thread.users.add(user1, user2)
         return thread
 
+
 class Thread(models.Model):
-    users = models.ManyToManyField(User, related_name='thread')
+    users = models.ManyToManyField(User, related_name='threads')
     messages = models.ManyToManyField(Message)
 
     objects = ThreadManager()
@@ -50,5 +51,6 @@ def messages_changed(sender,**kwargs):
                 false_pk_set.add(msg_pk)
     # Buscar los mensajes de false_pk_set que si están en el pk_set y los borramos de pk_set
     pk_set.difference_update(false_pk_set)
+
 
 m2m_changed.connect(messages_changed, sender=Thread.messages.through)
