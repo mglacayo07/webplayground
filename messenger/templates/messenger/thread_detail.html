@@ -60,16 +60,50 @@
               {% endfor %}
             </div>
             <!-- Aquí crearemos el formulario -->
-          <button id="testBtn">Petición asíncrona de prueba</button>
+          <textarea id="content" class="form-control mb-2" rows="2" placeholder="Escribe tu mensaje aquí"></textarea>
+          <button id="testBtn" class="btn btn-primary btn-sm btn-block" disabled>Enviar mensaje</button>
           <script>
-              var testBtn = document.getElementById("testBtn");
-              testBtn.addEventListener("click", function () {
-                  var content = "Esto es una prueba";
-                  const url = "{% url 'messenger:add' thread.pk %}" + "?content="+content;
-                  fetch(url).then(response => response.json()).then(function (data) {
-                      alert(data.created);
-                  })
+              var send = document.getElementById("testBtn");
+              send.addEventListener("click", function () {
+                  var content = encodeURI(document.getElementById("content").value);
+                  if (content.length > 0){
+                      const url = "{% url 'messenger:add' thread.pk %}" + "?content="+content;
+                      fetch(url, {'credentials':'include'}).then(response => response.json()).then(function (data) {
+                          // Si el mensaje se ha creado correctamente...
+                          if (data.created) {
+                            // Aquí iría el código de creación del mensaje dinámicamente
+                              var message = document.createElement('div');
+                              message.classList.add('mine','mb-3');
+                              message.innerHTML = '<small><i>Hace unos segundos</i></small><br>'+decodeURIComponent(content);
+                              document.getElementById("thread").appendChild(message);
+                              ScrollBottomInThread();
+                              document.getElementById("content").value = "";
+                              send.disabled = true;
+                          } else {
+                            // Si algo ha ido mal podemos debugear en la consola del inspector
+                            console.log("Algo ha fallado y el mensaje no se ha podido añadir.")
+                          }
+                      })
+                  }
               })
+
+              // Evento que activa o desactiva el botón dependiendo si hay o no mensaje
+              var content = document.getElementById("content");
+              content.addEventListener("keyup", function () {
+                  if (!this.checkValidity() || !this.value){
+                      send.disabled = true;
+                  }else{
+                      send.disabled = false;
+                  }
+              })
+
+              // Forzar el Scroll abajo del todoo
+              function ScrollBottomInThread(){
+                  var thread = document.getElementById("thread");
+                  thread.scrollTop = thread.scrollHeight;
+              }
+              ScrollBottomInThread();
+
           </script>
           </div>
         </div>
