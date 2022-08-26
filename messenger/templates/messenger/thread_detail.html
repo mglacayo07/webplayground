@@ -72,6 +72,9 @@
                           // Si el mensaje se ha creado correctamente...
                           if (data.created) {
                             // Aquí iría el código de creación del mensaje dinámicamente
+                              if(data.first){
+                                  window.location.href = "{% url 'messenger:detail' thread.pk %}";
+                              }
                               var message = document.createElement('div');
                               message.classList.add('mine','mb-3');
                               message.innerHTML = '<small><i>Hace unos segundos</i></small><br>'+decodeURIComponent(content);
